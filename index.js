@@ -47,3 +47,18 @@ app.put("/getUsers/put", async (req, res) =>{
         res.status(500).send("Erro de conexão com o servidor!");
     }
 });
+
+app.delete("/getUsers/delete", async (req, res) =>{
+    try {
+        const client = await pool.connect();
+        const { id } = req.body;
+        const { del } = await client.query(`DELETE FROM Users WHERE id=${id}`);
+        const { rows } = await client.query ("SELECT * FROM Users");
+        console.table(rows);
+        console.log(`Usuario com id ${id} foi deletado com sucesso!`)
+        res.status(200).send(rows);
+    } catch (error) {
+        console.error(error);
+        res.status(500).send("Erro de conexão. Digite um ID existente!");
+    }
+});
