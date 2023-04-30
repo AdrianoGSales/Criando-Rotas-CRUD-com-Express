@@ -32,3 +32,18 @@ app.post('/getUsers/post', async (req, res) =>{
         res.status(500).send("Erro de conexão com o servdor!");
     }
 });
+
+app.put("/getUsers/put", async (req, res) =>{
+    try {
+        const client = await pool.connect();
+        const { name } = req.body;
+        const { id } = req.body;
+        const { up } = await client.query (`UPDATE Users SET nome='${name}' WHERE id = '${id}'`);
+        const { rows } = await client.query ("SELECT * FROM Users");
+        console.table(rows);
+        res.status(200).send(rows);
+    } catch (error) {
+        console.error(error);
+        res.status(500).send("Erro de conexão com o servidor!");
+    }
+});
